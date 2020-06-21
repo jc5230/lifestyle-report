@@ -1,0 +1,94 @@
+---
+title: "lifestyle"
+author: "Jie Chen"
+date: "6/20/2020"
+output: html_document
+---
+
+```{r}
+#install.packages("gdata")
+#install.packages("plyr")
+library(gdata)
+library(plyr)
+
+ls <- read.csv("Lifestyle Checklist.csv")
+ls.q <- ls[1,]
+ls.d <- drop.levels(ls[-c(1,2),])
+
+ls.gender <- ls.d[,"Q2"]
+ls.gender.table <- as.data.frame(table(ls.gender))
+ls.gender.category <- data.frame(name = c("female", "male", "unknown"), value = c(1,2,3))
+ls.gender.chartdata <- merge(ls.gender.table, ls.gender.category, by.x = "ls.gender", by.y = "value")
+ls.gender.chartdata <- data.frame(name = ls.gender.chartdata[, "name"], value = ls.gender.chartdata[, "Freq"])
+
+ls.age <- ls.d[,"Q1"]
+ls.age.table <- as.data.frame(table(ls.age))
+ls.age.chartdata <- data.frame(num = ls.age.table[,"Freq"])
+row.names(ls.age.chartdata) <- ls.age.table[,"ls.age"]
+
+ls.score <- as.numeric(as.character(ls.d[,"SC0"]))
+ls.score.chartdata <- data.frame(score = ls.score)
+round_any(min(ls.score), 10)
+round_any(max(ls.score), 10, f = ceiling)
+
+```
+
+
+```{r}
+
+#install.packages("shinydashboard")
+#install.packages("ECharts2Shiny")
+#install.packages("plotly")
+
+## app.R ##
+if (interactive()) {
+library(shiny)
+library(ggplot2)
+library(ECharts2Shiny)
+library(shinydashboard)
+
+ui <- fluidPage(
+  
+  loadEChartsLibrary(),
+  
+  tags$style(type="text/css",
+    "h1, h3 {text-align:center; }"
+  ),
+  titlePanel(h1("Fitness Class Data Report")),
+  h3("HUDK 5053 Group 2"),
+  
+  sidebarLayout(
+    sidebarPanel(
+      tags$div(id="plot_gender", style="width:100%;height:300px;"),
+      #plotOutput("plot_gender", click = "plot_click_gender")
+      deliverChart(div_id = "plot_gender"),
+      
+      tags$div(id="plot_age", style="width:100%;height:200px;"),
+      deliverChart(div_id = "plot_age"),
+
+    ), 
+    mainPanel(
+      plotOutput("plot_score", click = "plot_click_score")
+    )
+  )
+  
+)
+
+server <- function(input, output) {
+  
+  # filter(as.data.frame(table(select(filter(ls.d, Q2 == 1), Q1))), Freq != 0)
+  
+  renderPieChart(div_id = "plot_gender", data = ls.gender.chartdata)
+  
+  renderBarChart(div_id = "plot_age", grid_left = '1%', direction = "vertical",
+                   data = ls.age.chartdata,
+                 show.legend = FALSE)
+  
+  output$plot_score <- renderPlot({
+    ggplot(ls.score.chartdata, aes(score)) + geom_histogram(binwidth = 5)
+  })
+}
+
+shinyApp(ui, server)
+}
+```
