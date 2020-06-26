@@ -8,44 +8,228 @@
 #
 
 
+#install.packages("gdata")
+#install.packages("plyr")
+#install.packages("xlsx")
+library(gdata)
+library(plyr)
+library(xlsx)
+
+ls <- read.csv("Lifestyle Checklist.csv")
+ls.q <- ls[1,]
+ls.d <- drop.levels(ls[-c(1,2), 18:46])
+
+ls.gender <- ls.d[,"Q2"]
+ls.gender.table <- as.data.frame(table(ls.gender))
+ls.gender.category <- data.frame(name = c("female", "male", "unknown"), value = c(1,2,3))
+ls.gender.chartdata <- merge(ls.gender.table, ls.gender.category, by.x = "ls.gender", by.y = "value")
+ls.gender.chartdata <- data.frame(name = ls.gender.chartdata[, "name"], value = ls.gender.chartdata[, "Freq"])
+
+ls.age <- as.numeric(as.character(ls.d[,"Q1"]))
+ls.age.table <- as.data.frame(table(ls.age))
+ls.age.chartdata <- data.frame(num = ls.age.table[,"Freq"])
+row.names(ls.age.chartdata) <- ls.age.table[,"ls.age"]
+ls.age.min <- min(ls.age[!is.na(ls.age)])
+ls.age.max <- max(ls.age[!is.na(ls.age)])
+
+
+ls.d[4:29] <- data.frame(apply(ls.d[4:29], 2, as.numeric), stringsAsFactors = TRUE)
+
+ls.score <- as.numeric(as.character(ls.d[,"SC0"]))
+ls.score.chartdata <- data.frame(score = ls.score)
+ls.score.min <- round_any(min(ls.score), 10)
+ls.score.max <- round_any(max(ls.score), 10, f = ceiling)
+ls.score.mean <- mean(ls.score)
+
+rhr.men <- read.xlsx("RHR.xlsx", 1, header = TRUE)
+names(rhr.men) <- c("Age", "18-25", "26-35", "36-45", "46-55", "56-65", "65+")
+rhr.women <- read.xlsx("RHR.xlsx", 2, header = TRUE)
+names(rhr.women) <- c("Age", "18-25", "26-35", "36-45", "46-55", "56-65", "65+")
+
+
+#install.packages("shinydashboard")
+#install.packages("ECharts2Shiny")
+#install.packages("plotly")
+
+## app.R ##
 
 library(shiny)
+library(ggplot2)
+library(dplyr)
 
-# Define UI for application that draws a histogram
 ui <- fluidPage(
-
-    # Application title
-    titlePanel("Old Faithful Geyser Data"),
-
-    # Sidebar with a slider input for number of bins 
+    
+    #loadEChartsLibrary(),
+    
+    tags$style(type="text/css",
+               "h1, h3 {text-align:center; }"
+    ),
+    titlePanel(h1("Fitness Class Data Report")),
+    h3("HUDK 5053 Group 2"),
+    
     sidebarLayout(
         sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
-
-        # Show a plot of the generated distribution
+            
+            checkboxGroupInput(
+                "gender", 
+                "Gender:", 
+                c("Male" = "male", "Female" = "female", "Prefer not to say" = "unknown"), 
+                inline = FALSE,
+                selected = c("male", "female", "unknown")
+            ),
+            
+            plotOutput("plot_gender", height = "200px"),
+            
+            #tags$div(id="plot_gender", style="width:100%;height:300px;"),
+            #deliverChart(div_id = "plot_gender"),
+            
+            sliderInput(
+                "age",
+                "Age:",
+                min = ls.age.min, max = ls.age.max, value = c(ls.age.min, ls.age.max)),
+            
+            plotOutput("plot_age", height = "200px"),
+            
+            #tags$div(id="plot_age", style="width:100%;height:200px;"),
+            #deliverChart(div_id = "plot_age"),
+            
+            verbatimTextOutput("textOutput1"),
+            verbatimTextOutput("textOutput2")
+        ), 
         mainPanel(
-           plotOutput("distPlot")
+            fluidRow(
+                column(8, 
+                       fluidRow(
+                           plotOutput("plot_score", height = "400px"))
+                ),
+                column(4, 
+                       fluidRow(
+                           plotOutput("plot_score_pie", height = "200px"),
+                           plotOutput("plot_score_box", height = "200px")
+                       )
+                )
+            ),
+            h5("Distribution Table of Resting Heart Rate"),
+            tabsetPanel(
+                
+                tabPanel("Class Data", 
+                         p("Male"),
+                         tableOutput("table_rhr_male"), 
+                         p("Female"),
+                         tableOutput("table_rhr_female")
+                ), 
+                tabPanel("Reference", 
+                         img(src = "rhr_ref.png"))
+            )
         )
+        
+        
     )
+    
 )
 
-# Define server logic required to draw a histogram
 server <- function(input, output) {
-
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    
+    # filter(as.data.frame(table(select(filter(ls.d, Q2 == 1), Q1))), Freq != 0)
+    # renderPieChart(div_id = "plot_gender", data = selectedGender)
+    
+    selectedGender <- reactive ({
+        selectedGender <- ls.gender.chartdata %>% 
+            filter(name %in% input$gender)
+        return(selectedGender)
     })
+    
+    #renderPieChart(div_id = "plot_gender", data = selectedGender)
+    
+    output$plot_gender <- renderPlot ({
+        ggplot(selectedGender(), aes(x = "", y = value, fill = name)) + 
+            geom_bar(stat="identity", width=1, color="white") + 
+            coord_polar("y", start=0) +
+            theme_void() +
+            geom_text(aes(label = value), color = "white", size=6)
+    })
+    
+    selectedGenderVal <- reactive({
+        selectedGenderVal <- ls.gender.category %>% 
+            filter(ls.gender.category$name %in% selectedGender()$name)
+        return(selectedGenderVal)
+    })
+    
+    selectedAge <- reactive ({
+        selectedAge <- ls.d %>% 
+            filter(Q2 %in% selectedGenderVal()$value) %>% 
+            select(Q1)
+        selectedAge <- data.frame(apply(selectedAge, 2, as.numeric), stringsAsFactors = TRUE)
+        selectedAge <- selectedAge %>% filter(Q1 %in% min(input$age):max(input$age))
+        return(selectedAge)
+    })
+    
+    #renderBarChart(div_id = "plot_age", grid_left = '1%', direction = "vertical",
+    #                 data = ls.age.chartdata,
+    #              show.legend = FALSE)
+    
+    output$plot_age <- renderPlot({
+        ggplot(selectedAge(), aes(Q1)) + 
+            geom_histogram(col = "white", binwidth = 1) +
+            xlab("Age")
+    })
+    
+    selectedScore_Sub <- reactive({
+        selectedScore <- ls.d %>% 
+            filter(Q1 %in% unique(selectedAge()$Q1)) %>%
+            select(4:28)
+        return(selectedScore)
+    })
+    
+    selectedScore_Total <- reactive({
+        selectedScore <- ls.d %>% 
+            filter(Q1 %in% unique(selectedAge()$Q1)) %>%
+            select(c(3, 29)) %>%
+            merge(ls.gender.category, by.y = "value", by.x = "Q2") %>% 
+            select(-Q2) %>%
+            mutate(HealthCondition = case_when(SC0 >= 85 ~ "Very Good",
+                                               SC0 >= 70 ~ "Excellent", 
+                                               SC0 >= 55 ~ "Good", 
+                                               SC0 >= 35 ~ "Fair", 
+                                               TRUE ~ "Unknown"))
+        return(selectedScore)
+    })
+    
+    selectedGenderMean <- reactive({
+        ls.score.gendermean <- aggregate(selectedScore_Total()$SC0, by=list(selectedScore_Total()$name), FUN=mean)
+        names(ls.score.gendermean) <- c("gender", "mean")
+        return(ls.score.gendermean)
+    })
+    
+    output$plot_score <- renderPlot({
+        ggplot(selectedScore_Total(), aes(x = SC0, fill = name, color = name)) + 
+            ggtitle("Overall Score Distribution") +
+            geom_histogram(position = "stack", col = "white", alpha=0.5, binwidth = 5) + 
+            xlab("Overall Score") +
+            geom_vline(data = selectedGenderMean(), aes(xintercept = mean, color=gender),
+                       linetype="dashed")
+        
+    })
+    
+    output$plot_score_pie <- renderPlot({
+        ggplot(selectedScore_Total(), aes(x = "", fill = HealthCondition)) + 
+            ggtitle("Health Condition Pie Chart") +
+            geom_bar(stat = "count", width = 1, color = "white") + 
+            coord_polar("y") + 
+            theme_void()
+    })
+    
+    output$plot_score_box <- renderPlot({
+        ggplot(selectedScore_Total(), aes(x = name, y = SC0, fill = name)) +
+            geom_boxplot() + 
+            ggtitle("Gender Difference in Score") + 
+            ylab("Score") + 
+            xlab("Gender")
+    })
+    
+    output$table_rhr_male <- renderTable(rhr.men, digits = 0, na = "")
+    output$table_rhr_female <- renderTable(rhr.women, digits = 0, na = "")
 }
 
-# Run the application 
-shinyApp(ui = ui, server = server)
+shinyAppDir(".")
+shinyApp(ui, server)

@@ -1,0 +1,12 @@
+name: FitnessClassReport
+title: FitnessClassReport
+username:
+account: janecomet
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2498664
+bundleId: 3312159
+url: https://janecomet.shinyapps.io/FitnessClassReport/
+when: 1593020779.51503
+asMultiple: FALSE
+asStatic: FALSE

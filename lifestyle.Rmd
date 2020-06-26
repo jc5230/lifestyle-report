@@ -8,8 +8,10 @@ output: html_document
 ```{r}
 #install.packages("gdata")
 #install.packages("plyr")
+#install.packages("xlsx")
 library(gdata)
 library(plyr)
+library(xlsx)
 
 ls <- read.csv("Lifestyle Checklist.csv")
 ls.q <- ls[1,]
@@ -35,8 +37,12 @@ ls.score <- as.numeric(as.character(ls.d[,"SC0"]))
 ls.score.chartdata <- data.frame(score = ls.score)
 ls.score.min <- round_any(min(ls.score), 10)
 ls.score.max <- round_any(max(ls.score), 10, f = ceiling)
-
 ls.score.mean <- mean(ls.score)
+
+rhr.men <- read.xlsx("RHR.xlsx", 1, header = TRUE)
+names(rhr.men) <- c("Age", "18-25", "26-35", "36-45", "46-55", "56-65", "65+")
+rhr.women <- read.xlsx("RHR.xlsx", 2, header = TRUE)
+names(rhr.women) <- c("Age", "18-25", "26-35", "36-45", "46-55", "56-65", "65+")
 ```
 
 
@@ -73,7 +79,7 @@ ui <- fluidPage(
         selected = c("male", "female", "unknown")
       ),
       
-      plotOutput("plot_gender"),
+      plotOutput("plot_gender", height = "200px"),
       
       #tags$div(id="plot_gender", style="width:100%;height:300px;"),
       #deliverChart(div_id = "plot_gender"),
@@ -83,7 +89,7 @@ ui <- fluidPage(
         "Age:",
         min = ls.age.min, max = ls.age.max, value = c(ls.age.min, ls.age.max)),
       
-      plotOutput("plot_age"),
+      plotOutput("plot_age", height = "200px"),
       
       #tags$div(id="plot_age", style="width:100%;height:200px;"),
       #deliverChart(div_id = "plot_age"),
@@ -93,11 +99,32 @@ ui <- fluidPage(
     ), 
     mainPanel(
       fluidRow(
-        column(8,
-          plotOutput("plot_score")), 
-        column (4, plotOutput("plot_score_pie")))
-      
+        column(8, 
+          fluidRow(
+            plotOutput("plot_score", height = "400px"))
+          ),
+        column(4, 
+          fluidRow(
+            plotOutput("plot_score_pie", height = "200px"),
+            plotOutput("plot_score_box", height = "200px")
+          )
+        )
+      ),
+      h5("Distribution Chart of Resting Heart Rate"),
+      tabsetPanel(
+        
+        tabPanel("Class Data", 
+          p("Male"),
+          tableOutput("table_rhr_male"), 
+          p("Female"),
+          tableOutput("table_rhr_female")
+        ), 
+        tabPanel("Reference", 
+          img(src = "rhr_ref.png"))
+      )
     )
+      
+    
   )
   
 )
@@ -202,8 +229,19 @@ server <- function(input, output) {
       coord_polar("y") + 
       theme_void()
   })
+  
+  output$plot_score_box <- renderPlot({
+    ggplot(selectedScore_Total(), aes(x = name, y = SC0, fill = name)) +
+      geom_boxplot() + 
+      ggtitle("Gender Difference in Score") +
+      ylab("Score")
+  })
+  
+  output$table_rhr_male <- renderTable(rhr.men, digits = 0, na = "")
+  output$table_rhr_female <- renderTable(rhr.women, digits = 0, na = "")
 }
 
+shinyAppDir(".")
 shinyApp(ui, server)
 
 ```

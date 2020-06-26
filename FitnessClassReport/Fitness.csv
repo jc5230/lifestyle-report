@@ -1,0 +1,28 @@
+StartDate,EndDate,Status,IPAddress,Progress,Duration (in seconds),Finished,RecordedDate,ResponseId,RecipientLastName,RecipientFirstName,RecipientEmail,ExternalReference,LocationLatitude,LocationLongitude,DistributionChannel,UserLanguage,Q9,Q10,Q11,Q1,Q2,Q3,Q13,Q14,Q15
+Start Date,End Date,Response Type,IP Address,Progress,Duration (in seconds),Finished,Recorded Date,Response ID,Recipient Last Name,Recipient First Name,Recipient Email,External Data Reference,Location Latitude,Location Longitude,Distribution Channel,User Language,UNI,Gender,Age,Resting Heart Rate (beats per min),Right-hand overhead?,Left-hand overhead?,Your Height (cm),Your Weight (kg),"BMI = kg/m2
+lbs=kg ( ?? 2.2)
+
+Inch=m (x0.0254)
+
+ 
+
+Your Body Mass Index"
+"{""ImportId"":""startDate"",""timeZone"":""America/Denver""}","{""ImportId"":""endDate"",""timeZone"":""America/Denver""}","{""ImportId"":""status""}","{""ImportId"":""ipAddress""}","{""ImportId"":""progress""}","{""ImportId"":""duration""}","{""ImportId"":""finished""}","{""ImportId"":""recordedDate"",""timeZone"":""America/Denver""}","{""ImportId"":""_recordId""}","{""ImportId"":""recipientLastName""}","{""ImportId"":""recipientFirstName""}","{""ImportId"":""recipientEmail""}","{""ImportId"":""externalDataReference""}","{""ImportId"":""locationLatitude""}","{""ImportId"":""locationLongitude""}","{""ImportId"":""distributionChannel""}","{""ImportId"":""userLanguage""}","{""ImportId"":""QID9_TEXT""}","{""ImportId"":""QID10""}","{""ImportId"":""QID11_TEXT""}","{""ImportId"":""QID4_TEXT""}","{""ImportId"":""QID6""}","{""ImportId"":""QID7""}","{""ImportId"":""QID13_TEXT""}","{""ImportId"":""QID14_TEXT""}","{""ImportId"":""QID15_TEXT""}"
+6/18/2020 7:03,6/18/2020 7:06,IP Address,70.171.41.124,100,176,TRUE,6/18/2020 7:06,R_3k0oxsSJyeGL6uk,,,,,29.61380005,-82.38600159,anonymous,EN,zm2305,Female,22,62,Yes,Yes,176,57,18.401
+6/18/2020 6:59,6/18/2020 7:03,IP Address,71.172.162.234,100,208,TRUE,6/18/2020 7:03,R_2rVdTsiP7P3gLMC,,,,,40.71820068,-74.04759979,anonymous,EN,xz2910,Female,27,80,Yes,No,167,57.5,20.7
+6/18/2020 7:03,6/18/2020 7:04,IP Address,108.35.118.147,100,83,TRUE,6/18/2020 7:04,R_1jdBbIs4TwFsmVx,,,,,40.84919739,-73.97350311,anonymous,EN,cc4527,Male,23,67,Yes,No,185,70,20.6
+6/22/2020 3:58,6/22/2020 4:02,IP Address,98.184.231.7,100,237,TRUE,6/22/2020 4:02,R_2SIzu8uYukWsCLu,,,,,33.70739746,-117.7053986,anonymous,EN,yz3730,Female,24,69,Yes,Yes,167,50.5,18.1
+6/18/2020 7:03,6/18/2020 7:18,IP Address,98.235.166.97,100,886,TRUE,6/18/2020 7:18,R_ujGu1pgdLwB0Qxj,,,,,40.79570007,-77.86180115,anonymous,EN,zz2726,Female,23,70,Yes,Yes,165,55,20.2
+6/18/2020 7:02,6/18/2020 7:04,IP Address,65.78.8.230,100,141,TRUE,6/18/2020 7:04,R_1fZwa3uFRYy4Myg,,,,,40.78199768,-73.99530029,anonymous,EN,hg2527,Female,24,72,Yes,Yes,173,45,15
+6/18/2020 7:03,6/18/2020 7:07,IP Address,1.226.137.16,100,229,TRUE,6/18/2020 7:07,R_2ccjm0vYN1a74lq,,,,,37.59849548,126.978302,anonymous,EN,lk2817,Female,28,60,Yes,Yes,165,65,23.9
+6/18/2020 7:03,6/18/2020 7:09,IP Address,142.255.6.135,100,358,TRUE,6/18/2020 7:09,R_3st93HySQg2PPzH,,,,,40.86909485,-73.9190979,anonymous,EN,bkd2115,Rather not say,32,70,Yes,Yes,180,80,24.7
+6/18/2020 7:08,6/18/2020 7:10,IP Address,60.216.180.123,100,129,TRUE,6/18/2020 7:10,R_3EKG2vMB7BnVArr,,,,,36.66209412,117.0104065,anonymous,EN,,Male,26,80,No,No,183,90,26.88
+6/18/2020 7:03,6/18/2020 7:18,IP Address,67.230.167.225,100,897,TRUE,6/18/2020 7:18,R_4PkLiXS2lv1C9oZ,,,,,34.05490112,-118.2577972,anonymous,EN,jj3084,Female,24,72,Yes,No,160,45,17.58
+6/18/2020 7:07,6/18/2020 7:15,IP Address,27.125.141.75,100,482,TRUE,6/18/2020 7:15,R_1FmlVD8I2PLDsEG,,,,,1.322402954,103.7889099,anonymous,EN,xql2001,Male,26,80,Yes,Yes,173,57,19.72
+6/18/2020 7:04,6/18/2020 7:05,IP Address,27.122.57.46,100,109,TRUE,6/18/2020 7:05,R_2EuCK9XAsbOMWqh,,,,,22.25,114.166687,anonymous,EN,ad3671,Female,24,75,Yes,Yes,185,70,20.45
+6/18/2020 7:00,6/18/2020 7:02,IP Address,76.121.186.4,100,107,TRUE,6/18/2020 7:02,R_2az73eXueJCsmvX,,,,,47.60920715,-122.1167984,anonymous,EN,xc2496,Female,25,78,Yes,Yes,175,65,21.22
+6/18/2020 7:03,6/18/2020 7:15,IP Address,76.121.186.4,100,707,TRUE,6/18/2020 7:15,R_1cXSIN6FhzGVvb6,,,,,47.60920715,-122.1167984,anonymous,EN,xc2496,Female,25,80,Yes,No,175,65,21.22
+6/18/2020 7:03,6/18/2020 7:17,IP Address,144.202.124.162,100,857,TRUE,6/18/2020 7:17,R_2TACWITYDmVrciF,,,,,34.07290649,-118.2606049,anonymous,EN,jc5230,Female,23,82,Yes,Yes,160,45,17.6
+6/18/2020 7:03,6/18/2020 7:18,IP Address,158.222.192.232,100,895,TRUE,6/18/2020 7:18,R_2aVR32YEBxTG0GW,,,,,40.82310486,-73.95130157,anonymous,EN,zz2641,Male,26,77,Yes,No,174,75,22
+6/18/2020 7:07,6/18/2020 7:16,IP Address,52.119.83.108,100,548,TRUE,6/18/2020 7:16,R_XUh4Qu2hddS4jbr,,,,,40.74290466,-73.93920135,anonymous,EN,yz3679,Female,24,83,Yes,Yes,163,46,17.3
+6/18/2020 7:00,6/18/2020 7:17,IP Address,38.121.21.172,100,1000,TRUE,6/18/2020 7:17,R_1q4c2Kz3BgWgm3M,,,,,34.05439758,-118.2440033,anonymous,EN,zc2323,Female,23,84,Yes,No,169,50,17.48
